@@ -2,7 +2,7 @@
 This is an ideal java socket client class 
 It contains a socket client class and a RequestManager
 ## Dependencies
-You need to have [https://github.com/FasterXML/jackson](jackson) library to be able to use those files, the jackson library is used to serialize and deserialize data to and from json
+You need to have [jackson](https://github.com/FasterXML/jackson) library to be able to use those files, the jackson library is used to serialize and deserialize data to and from json
 ## Overview
 The communication between client and server is done using json, a request to the server is like  `{hash:(number>0),command:"",files?:[MediaFile],...others fields}`, where the hash is the number associated to the request, and the command is the request command, and we can have more other fields depending on the command. The server so need to parse the request string , and based on the commands, return a response in json string format of course, and the client parse that response which must be like  `{hash:(number >=0),status:(number>=0),data:any,files?:[MediaFile]}`.  
 
@@ -32,7 +32,7 @@ Thats is an interface and has just one method:
 That interface is responsible of handling ftp operation like sending or receiving a media file.  
 It contains just 2 method :
   * `send(OutputStream out,MediaFile file)`: permits sending a media file
-  * `receive(InputStream in,String path)`: permits to receive a media file from the server
+  * `receive(InputStream in,MediaFile mediaFile)`: permits to receive a media file from the server
 You need to implements those two methods according to how your ftp server works
 
 ### RequestManager class
@@ -104,10 +104,14 @@ And of course we need to configure our RequestManager, since it's a pure static 
           MFtp.ftpPut(file.absolutePath, (DataOutputStream) out);
       }
 
-      @Override
-      public File receive(InputStream in, String storePath) {
-          return MFtp.ftpGetFile((DataInputStream) in, storePath);
-      }
+     @Override
+     public File receive(InputStream in, MediaFile mediaFile) {
+         File f=new File(Config.TEMP_DIR+"/"+mediaFile.name);
+         if(!f.exists()){
+             f=MFtp.ftpGetFile((DataInputStream) in, f.getParent());
+         }
+         return  f;
+     }
   });
 ```
 
