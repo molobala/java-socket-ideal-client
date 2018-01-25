@@ -2,6 +2,7 @@ package com.molo.socket.ideal.client;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.io.File;
@@ -75,7 +76,9 @@ public class Request {
         ObjectMapper mapper=new ObjectMapper();
         if(medias !=  null && !medias.isEmpty()){
             try {
-                data.put("files",  mapper.readTree(mapper.writeValueAsString(medias)));
+                ArrayNode arr=data.putArray("files");
+                for(MediaFile m:medias)
+                    arr.add(mapper.readTree(mapper.writeValueAsString(m)));
             } catch (IOException e) {
                 e.printStackTrace();
             }
