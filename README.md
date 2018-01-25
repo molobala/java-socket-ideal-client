@@ -1,11 +1,16 @@
 # java-socket-ideal-client
 This is an ideal java socket client class 
 It contains a socket client class and a RequestManager
+## Dependencies
+You need to have [https://github.com/FasterXML/jackson](jackson) library to be able to use those files, the jackson library is used to serialize and deserialize data to and from json
+## Overview
+The communication between client and server is done using json, a request to the server is like  `{hash:(number>0),command:"",files?:[MediaFile],...others fields}`, where the hash is the number associated to the request, and the command is the request command, and we can have more other fields depending on the command. The server so need to parse the request string , and based on the commands, return a response in json string format of course, and the client parse that response which must be like  `{hash:(number >=0),status:(number>=0),data:any,files?:[MediaFile]}`.  
 
 ## Classes and they description
 ### Request class
 This class represents a request to send to the server, requests are made by the client and are managed by a RequestManager Object  
 To each request is assigned a hash code (`hash field) , which becomes usefull when a response is received from the server. 
+Each request has a required `command` field, so the server response is based on that value, and a `data` field (of ObjectNode type) which can contains an unlimited number of fields.
 
 ### Response class
 That class represents a response from the server, response are created by the Client from the json string recived from the server and are delivered to the RequestManager in case of request response, or to the message listener in case of server messages. 
@@ -26,8 +31,8 @@ Thats is an interface and has just one method:
 ### MediaFileHandler interface
 That interface is responsible of handling ftp operation like sending or receiving a media file.  
 It contains just 2 method :
-  * send(OutputStream out,MediaFile file): permits sending a media file
-  * receive(InputStream in,String path): permits to receive a media file from the server
+  * `send(OutputStream out,MediaFile file)`: permits sending a media file
+  * `receive(InputStream in,String path)`: permits to receive a media file from the server
 You need to implements those two methods according to how your ftp server works
 
 ### RequestManager class
@@ -63,8 +68,28 @@ This class represents a media file to send or receive to/from the server. It jus
 To instanciate a client you juste need the `new` operator and call the `open` method to open connection to your server
 ```java
   client=new Client();
-  client.setListener(new ClientMessageListener());
+   client.setListener(new MessageListener() {
+       @Override
+       public void onReceiveNewMessage(Response message) {
+
+       }
+   });
+  ...
+  new Thread(() -> {
+   ....
+   try {
+       client.open(HOST,PORT);
+       client.start();
+      ...
+   } catch (IOException e) {
+       //retry to open
+       //addressInput.show();
+   }
+ })
+ .start();
 ```
+### Request Manager configuration
+
 And of course we need to configure our RequestManager, since it's a pure static class (contains only static methods), to do that we just new to call the `configure` method of RequestManager class like this
 ```java
   RequestManager.configure(client, new ResponseHandler() {
@@ -85,3 +110,27 @@ And of course we need to configure our RequestManager, since it's a pure static 
       }
   });
 ```
+
+### Performing request to server
+To perform a request to the server you just need to instaciate a new Request object, and fill its data object with you params
+```java
+  //making a request to the server
+  Request req=new Request("authenticate");
+  if(!token.isEmpty())
+      req.data.put("with",token);
+  req.callback=new RequestResultCallBack() {
+      @Override
+      public void onSuccess(Response r) {
+          JsonNode tmp = (JsonNode) r.data;
+          pref.edit().putString("token",tmp.get("token").asText()).apply();
+          groupeView.setText(tmp.get("name").asText());
+          scoreView.setText(getString(R.string.score,tmp.get("score").asInt()));
+      }
+      @Override
+      public void onFail(Response r) {
+
+      }
+  };
+  req.execute();
+```
+
