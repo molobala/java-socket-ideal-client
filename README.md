@@ -1,6 +1,9 @@
 # java-socket-ideal-client
 This is an ideal java socket client class 
-It contains a socket client class and a RequestManager
+It contains a socket client class and a RequestManager  
+You can just add the library file located in the bin directory to your project and enjoy the power of the library.  
+For those who want to modify the code and adapt it to their case,they can do so.  
+
 ## Dependencies
 You need to have [jackson](https://github.com/FasterXML/jackson) library to be able to use those files, the jackson library is used to serialize and deserialize data to and from json
 ## Overview
