@@ -9,7 +9,7 @@ The communication between client and server is done using json, a request to the
 ## Classes and they description
 ### Request class
 This class represents a request to send to the server, requests are made by the client and are managed by a RequestManager Object  
-To each request is assigned a hash code (`hash field) , which becomes usefull when a response is received from the server. 
+To each request is assigned a hash code (`hash field`) , which becomes usefull when a response is received from the server. 
 Each request has a required `command` field, so the server response is based on that value, and a `data` field (of ObjectNode type) which can contains an unlimited number of fields.
 
 ### Response class
