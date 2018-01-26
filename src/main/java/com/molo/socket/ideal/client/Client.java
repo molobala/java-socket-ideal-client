@@ -38,15 +38,18 @@ public class Client extends RequestHandler{
         mDin=new DataInputStream(socket.getInputStream());
         mDout=new DataOutputStream(socket.getOutputStream());
         readThread=new ReadThread();
-        writeThread=new Thread(()->{
-            while(run){
-                try {
-                    String s=requestQueue.take();
-                    //Log.e("WriteThread ",s);
-                    sendMessage(s);
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+        writeThread=new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(run){
+                    try {
+                        String s=requestQueue.take();
+                        //Log.e("WriteThread ",s);
+                        sendMessage(s);
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
