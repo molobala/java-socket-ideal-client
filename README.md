@@ -18,13 +18,13 @@ To each response is assigned a  status code and a hash code, the request and it'
 > Free are you to defined your status code in a class, generaly to will share that class between your server and the client app, because they need the same codes.  
 ### RequestResultCallBack interface
 This interface represents a call back on a request response.
-### RequestHanlder class
+### RequestHandler class
 that is an abstract class and has 3 abstract methods:
   * `send(String s)`: should be implemented (it is implemented by the Client class) by the class that communicated by the server
   * `getOutputStream()`: should be implemented by the class that communicated by the server (here by the Client class), it returns the OutputStream underlying the connected socket to the server
   * `getInputStream()`: should be implemented by the class that communicated by the server (here by the Client class), it returns the InputStream underlying the connected socket to the server  
 
-### ResponseHanlder interface
+### ResponseHandler interface
 Thats is an interface and has just one method:
   * `onResponse(RequestResultCallBack callBack,Response response)` : should be implemented.
 
