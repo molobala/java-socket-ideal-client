@@ -5,6 +5,10 @@ It contains a socket client class and a RequestManager
 You need to have [jackson](https://github.com/FasterXML/jackson) library to be able to use those files, the jackson library is used to serialize and deserialize data to and from json
 ## Overview
 The communication between client and server is done using json, a request to the server is like  `{hash:(number>0),command:"",files?:[MediaFile],...others fields}`, where the hash is the number associated to the request, and the command is the request command, and we can have more other fields depending on the command. The server so need to parse the request string , and based on the commands, return a response in json string format of course, and the client parse that response which must be like  `{hash:(number >=0),status:(number>=0),data:any,files?:[MediaFile]}`.  
+Below is the classes diagram used  
+
+![classes diagram](imgs/socket-client.png)
+
 
 ## Classes and they description
 ### Request class
