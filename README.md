@@ -13,7 +13,7 @@ Below is the classes diagram used
 ![classes diagram](imgs/socket-client.png)
 
 
-## Classes and they description
+## Classes and their description
 ### Request class
 This class represents a request to send to the server, requests are made by the client and are managed by a RequestManager Object  
 To each request is assigned a hash code (`hash field`) , which becomes usefull when a response is received from the server. 
